@@ -190,6 +190,22 @@ HireFlow intentionally keeps the architecture small: synchronous SQLAlchemy sess
 
 Interview feedback is visible to the candidate who owns the interview. Issued tokens can remain valid in Recruitment and Interview until expiry after an Auth account change. See the [design notes and limitations](docs/developer-guide.md#concepts-beyond-basic-crud-and-mvp-limits) before extending the project.
 
+## 🔮 Future Scope
+
+The current version focuses on a working microservices MVP.
+
+Planned improvements include:
+
+- Add Redis caching for frequently accessed job data.
+- Add Traefik as a reverse proxy and load balancer.
+- Horizontally scale FastAPI services using multiple replicas.
+- Add Alembic for database schema migrations.
+- Add refresh-token and token-revocation support.
+- Add structured logging and request correlation IDs.
+- Add load testing using Locust or k6.
+- Add CI/CD using GitHub Actions.
+- Add monitoring and observability in a later version.
+
 ---
 
 <div align="center">
