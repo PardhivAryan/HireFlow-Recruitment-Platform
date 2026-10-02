@@ -1,0 +1,146 @@
+name: hireflow
+
+services:
+  auth-service:
+    build: ./auth-service
+    environment:
+      AUTH_POSTGRES_USER: ${AUTH_POSTGRES_USER:?Set AUTH_POSTGRES_USER in .env}
+      AUTH_POSTGRES_PASSWORD: ${AUTH_POSTGRES_PASSWORD:?Set AUTH_POSTGRES_PASSWORD in .env}
+      AUTH_POSTGRES_DB: ${AUTH_POSTGRES_DB:?Set AUTH_POSTGRES_DB in .env}
+      AUTH_POSTGRES_HOST: ${DOCKER_AUTH_POSTGRES_HOST:-auth-db}
+      AUTH_POSTGRES_PORT: ${DOCKER_AUTH_POSTGRES_PORT:-5432}
+      AUTH_JWT_SECRET: ${AUTH_JWT_SECRET:?Set AUTH_JWT_SECRET in .env}
+      RECRUITER_CREATION_SECRET: ${RECRUITER_CREATION_SECRET:?Set RECRUITER_CREATION_SECRET in .env}
+      AUTH_ACCESS_TOKEN_EXPIRE_MINUTES: ${AUTH_ACCESS_TOKEN_EXPIRE_MINUTES:-30}
+      REDIS_URL: ${DOCKER_REDIS_URL:-redis://redis:6379/0}
+      AUTH_LOGIN_RATE_LIMIT: ${AUTH_LOGIN_RATE_LIMIT:-5}
+      AUTH_REGISTER_RATE_LIMIT: ${AUTH_REGISTER_RATE_LIMIT:-5}
+      AUTH_RATE_LIMIT_WINDOW_SECONDS: ${AUTH_RATE_LIMIT_WINDOW_SECONDS:-60}
+      AUTH_RATE_LIMIT_PREFIX: ${AUTH_RATE_LIMIT_PREFIX:-hireflow:rate-limit}
+    ports:
+      - "127.0.0.1:${AUTH_HTTP_PORT:-8001}:8000"
+    depends_on:
+      auth-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  recruitment-service:
+    build: ./recruitment-service
+    environment:
+      RECRUITMENT_POSTGRES_USER: ${RECRUITMENT_POSTGRES_USER:?Set RECRUITMENT_POSTGRES_USER in .env}
+      RECRUITMENT_POSTGRES_PASSWORD: ${RECRUITMENT_POSTGRES_PASSWORD:?Set RECRUITMENT_POSTGRES_PASSWORD in .env}
+      RECRUITMENT_POSTGRES_DB: ${RECRUITMENT_POSTGRES_DB:?Set RECRUITMENT_POSTGRES_DB in .env}
+      RECRUITMENT_POSTGRES_HOST: ${DOCKER_RECRUITMENT_POSTGRES_HOST:-recruitment-db}
+      RECRUITMENT_POSTGRES_PORT: ${DOCKER_RECRUITMENT_POSTGRES_PORT:-5432}
+      AUTH_JWT_SECRET: ${AUTH_JWT_SECRET:?Set AUTH_JWT_SECRET in .env}
+      INTERNAL_SERVICE_SECRET: ${INTERNAL_SERVICE_SECRET:?Set INTERNAL_SERVICE_SECRET in .env}
+      INTERVIEW_SERVICE_URL: ${DOCKER_INTERVIEW_SERVICE_URL:-http://interview-service:8000}
+    ports:
+      - "127.0.0.1:${RECRUITMENT_HTTP_PORT:-8002}:8000"
+    depends_on:
+      recruitment-db:
+        condition: service_healthy
+      interview-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  interview-service:
+    build: ./interview-service
+    environment:
+      INTERVIEW_POSTGRES_USER: ${INTERVIEW_POSTGRES_USER:?Set INTERVIEW_POSTGRES_USER in .env}
+      INTERVIEW_POSTGRES_PASSWORD: ${INTERVIEW_POSTGRES_PASSWORD:?Set INTERVIEW_POSTGRES_PASSWORD in .env}
+      INTERVIEW_POSTGRES_DB: ${INTERVIEW_POSTGRES_DB:?Set INTERVIEW_POSTGRES_DB in .env}
+      INTERVIEW_POSTGRES_HOST: ${DOCKER_INTERVIEW_POSTGRES_HOST:-interview-db}
+      INTERVIEW_POSTGRES_PORT: ${DOCKER_INTERVIEW_POSTGRES_PORT:-5432}
+      AUTH_JWT_SECRET: ${AUTH_JWT_SECRET:?Set AUTH_JWT_SECRET in .env}
+      INTERNAL_SERVICE_SECRET: ${INTERNAL_SERVICE_SECRET:?Set INTERNAL_SERVICE_SECRET in .env}
+    ports:
+      - "127.0.0.1:${INTERVIEW_HTTP_PORT:-8003}:8000"
+    depends_on:
+      interview-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  auth-db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${AUTH_POSTGRES_USER:?Set AUTH_POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${AUTH_POSTGRES_PASSWORD:?Set AUTH_POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${AUTH_POSTGRES_DB:?Set AUTH_POSTGRES_DB in .env}
+    ports:
+      - "127.0.0.1:${AUTH_DB_HOST_PORT:-5433}:5432"
+    volumes:
+      - auth_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  recruitment-db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${RECRUITMENT_POSTGRES_USER:?Set RECRUITMENT_POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${RECRUITMENT_POSTGRES_PASSWORD:?Set RECRUITMENT_POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${RECRUITMENT_POSTGRES_DB:?Set RECRUITMENT_POSTGRES_DB in .env}
+    ports:
+      - "127.0.0.1:${RECRUITMENT_DB_HOST_PORT:-5434}:5432"
+    volumes:
+      - recruitment_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  interview-db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${INTERVIEW_POSTGRES_USER:?Set INTERVIEW_POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${INTERVIEW_POSTGRES_PASSWORD:?Set INTERVIEW_POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${INTERVIEW_POSTGRES_DB:?Set INTERVIEW_POSTGRES_DB in .env}
+    ports:
+      - "127.0.0.1:${INTERVIEW_DB_HOST_PORT:-5435}:5432"
+    volumes:
+      - interview_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "127.0.0.1:${REDIS_HOST_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+volumes:
+  auth_postgres_data:
+  recruitment_postgres_data:
+  interview_postgres_data:

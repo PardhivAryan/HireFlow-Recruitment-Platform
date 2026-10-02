@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="440" viewBox="0 0 1280 440" role="img" aria-labelledby="title desc">
+  <title id="title">HireFlow recruitment platform</title>
+  <desc id="desc">A midnight blue banner with violet, teal, and amber accents connects the Auth, Recruitment, and Interview services.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#111A33"/><stop offset="1" stop-color="#080E20"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#A78BFA"/><stop offset="0.55" stop-color="#2DD4BF"/><stop offset="1" stop-color="#FBBF60"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#8090C0" stroke-opacity=".07"/>
+    </pattern>
+  </defs>
+  <rect width="1280" height="440" rx="24" fill="url(#background)"/>
+  <rect width="1280" height="440" rx="24" fill="url(#grid)"/>
+  <circle cx="1210" cy="25" r="220" fill="#8B5CF6" opacity=".06"/>
+  <circle cx="710" cy="460" r="230" fill="#2DD4BF" opacity=".035"/>
+  <rect x="48" y="46" width="44" height="44" rx="13" fill="#A78BFA"/>
+  <path d="M61 59V77M79 59V77M61 68H79" fill="none" stroke="#10162B" stroke-width="4" stroke-linecap="round"/>
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+    <text x="108" y="73" font-size="13" font-weight="700" letter-spacing="3" fill="#C4CDE3">THE RECRUITMENT PLATFORM</text>
+    <text x="46" y="185" font-size="82" font-weight="750" letter-spacing="-4" fill="#F8FAFF">Hire<tspan fill="#A78BFA">Flow</tspan></text>
+    <text x="50" y="233" font-size="25" font-weight="500" fill="#E2E8F5">Built for the next conversation.</text>
+    <text x="50" y="274" font-size="17" fill="#96A5C3">Identity, applications, and interviews.</text>
+    <text x="50" y="301" font-size="17" fill="#96A5C3">One connected backend.</text>
+    <rect x="50" y="348" width="120" height="30" rx="15" fill="#A78BFA" fill-opacity=".12" stroke="#A78BFA" stroke-opacity=".35"/>
+    <text x="110" y="368" text-anchor="middle" font-size="11" font-weight="700" letter-spacing="1.5" fill="#C4B5FD">3 SERVICES</text>
+    <rect x="182" y="348" width="150" height="30" rx="15" fill="#2DD4BF" fill-opacity=".09" stroke="#2DD4BF" stroke-opacity=".3"/>
+    <text x="257" y="368" text-anchor="middle" font-size="11" font-weight="700" letter-spacing="1.5" fill="#5EEAD4">FASTAPI + PYTHON</text>
+    <rect x="344" y="348" width="116" height="30" rx="15" fill="#FBBF60" fill-opacity=".08" stroke="#FBBF60" stroke-opacity=".3"/>
+    <text x="402" y="368" text-anchor="middle" font-size="11" font-weight="700" letter-spacing="1.5" fill="#FCD496">BACKEND MVP</text>
+    <path d="M779 133V150H861V179M861 261V280H943V307" fill="none" stroke="#495877" stroke-width="2" stroke-dasharray="5 5"/>
+    <rect x="666" y="51" width="298" height="82" rx="16" fill="#18213C" stroke="#A78BFA" stroke-opacity=".5"/>
+    <rect x="683" y="69" width="45" height="45" rx="12" fill="#A78BFA" fill-opacity=".14"/>
+    <text x="705" y="99" text-anchor="middle" font-size="20" font-weight="600" fill="#C4B5FD">01</text>
+    <text x="745" y="87" font-size="18" font-weight="600" fill="#F1F5FF">Auth</text>
+    <text x="745" y="110" font-size="13" fill="#A3B0CD">Identity &amp; access</text>
+    <circle cx="940" cy="75" r="4" fill="#A78BFA"/>
+    <rect x="748" y="179" width="298" height="82" rx="16" fill="#122B34" stroke="#2DD4BF" stroke-opacity=".5"/>
+    <rect x="765" y="197" width="45" height="45" rx="12" fill="#2DD4BF" fill-opacity=".12"/>
+    <text x="787" y="227" text-anchor="middle" font-size="20" font-weight="600" fill="#5EEAD4">02</text>
+    <text x="827" y="215" font-size="18" font-weight="600" fill="#F1F5FF">Recruitment</text>
+    <text x="827" y="238" font-size="13" fill="#A3BFC7">Jobs &amp; applications</text>
+    <circle cx="1022" cy="203" r="4" fill="#2DD4BF"/>
+    <rect x="830" y="307" width="298" height="82" rx="16" fill="#2A2730" stroke="#FBBF60" stroke-opacity=".5"/>
+    <rect x="847" y="325" width="45" height="45" rx="12" fill="#FBBF60" fill-opacity=".12"/>
+    <text x="869" y="355" text-anchor="middle" font-size="20" font-weight="600" fill="#FCD496">03</text>
+    <text x="909" y="343" font-size="18" font-weight="600" fill="#F1F5FF">Interview</text>
+    <text x="909" y="366" font-size="13" fill="#BCB6C5">Scheduling &amp; feedback</text>
+    <circle cx="1104" cy="331" r="4" fill="#FBBF60"/>
+  </g>
+  <rect x="48" y="419" width="1184" height="3" rx="1.5" fill="url(#accent)"/>
+</svg>
