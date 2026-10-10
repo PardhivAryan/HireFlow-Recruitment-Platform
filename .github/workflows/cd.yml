@@ -1,0 +1,65 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
+    branches:
+      - main
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish-images:
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout tested commit
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Login to GitHub Container Registry
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" |
+          docker login ghcr.io \
+            -u "${{ github.actor }}" \
+            --password-stdin
+
+      - name: Build and push Auth image
+        run: |
+          docker build \
+            -t ghcr.io/pardhivaryan/hireflow-auth-service:latest \
+            -t ghcr.io/pardhivaryan/hireflow-auth-service:${{ github.event.workflow_run.head_sha }} \
+            ./auth-service
+
+          docker push ghcr.io/pardhivaryan/hireflow-auth-service:latest
+          docker push ghcr.io/pardhivaryan/hireflow-auth-service:${{ github.event.workflow_run.head_sha }}
+
+      - name: Build and push Recruitment image
+        run: |
+          docker build \
+            -t ghcr.io/pardhivaryan/hireflow-recruitment-service:latest \
+            -t ghcr.io/pardhivaryan/hireflow-recruitment-service:${{ github.event.workflow_run.head_sha }} \
+            ./recruitment-service
+
+          docker push ghcr.io/pardhivaryan/hireflow-recruitment-service:latest
+          docker push ghcr.io/pardhivaryan/hireflow-recruitment-service:${{ github.event.workflow_run.head_sha }}
+
+      - name: Build and push Interview image
+        run: |
+          docker build \
+            -t ghcr.io/pardhivaryan/hireflow-interview-service:latest \
+            -t ghcr.io/pardhivaryan/hireflow-interview-service:${{ github.event.workflow_run.head_sha }} \
+            ./interview-service
+
+          docker push ghcr.io/pardhivaryan/hireflow-interview-service:latest
+          docker push ghcr.io/pardhivaryan/hireflow-interview-service:${{ github.event.workflow_run.head_sha }}
