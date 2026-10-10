@@ -268,4 +268,3 @@ Planned improvements include:
   <strong>HireFlow</strong><br />
   <sub>Three services. One connected hiring workflow.</sub>
 </div>
-```
