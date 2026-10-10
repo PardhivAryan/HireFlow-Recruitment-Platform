@@ -173,6 +173,62 @@ python -m pytest -q
 
 Configure `.env` first. Tests create isolated PostgreSQL schemas; Auth tests use isolated Redis key namespaces. See [testing details and connection overrides](docs/developer-guide.md#testing).
 
+## ⚙️ CI/CD Pipeline
+
+HireFlow uses **GitHub Actions** for continuous integration and continuous delivery.
+
+### Continuous Integration
+
+The CI workflow runs automatically on pushes to the `main` branch and pull requests targeting `main`.
+
+```text
+Push / Pull Request
+        ↓
+GitHub Actions
+        ↓
+Start PostgreSQL + Redis
+        ↓
+Run Auth tests
+        ↓
+Run Recruitment tests
+        ↓
+Run Interview tests
+        ↓
+Validate Docker Compose
+        ↓
+Build FastAPI Docker images
+```
+
+If any test, Docker Compose validation, or Docker image build fails, the CI workflow fails.
+
+### Continuous Delivery
+
+After CI completes successfully for a push to the `main` branch, the CD workflow runs automatically.
+
+```text
+CI Success
+        ↓
+CD Workflow
+        ↓
+Build Auth Docker image
+        ↓
+Build Recruitment Docker image
+        ↓
+Build Interview Docker image
+        ↓
+Publish images to GHCR
+```
+
+The Docker images are published to **GitHub Container Registry (GHCR)**:
+
+- `ghcr.io/pardhivaryan/hireflow-auth-service`
+- `ghcr.io/pardhivaryan/hireflow-recruitment-service`
+- `ghcr.io/pardhivaryan/hireflow-interview-service`
+
+Each image is published with both the `latest` tag and the Git commit SHA, providing traceable, versioned container images.
+
+The current pipeline implements **Continuous Delivery**. Automatic deployment to a production hosting environment is not part of the current MVP.
+
 ## 📚 Go deeper
 
 | Guide | What you will find |
@@ -212,3 +268,4 @@ Planned improvements include:
   <strong>HireFlow</strong><br />
   <sub>Three services. One connected hiring workflow.</sub>
 </div>
+```
